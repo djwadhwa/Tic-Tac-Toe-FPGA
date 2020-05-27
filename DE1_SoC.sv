@@ -33,9 +33,10 @@ module DE1_SoC (HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, KEY, SW, LEDR, GPIO_1, CLOCK
 	    ================================================================== */
 	 logic [15:0][15:0]RedPixels; // 16 x 16 array representing red LEDs
     logic [15:0][15:0]GrnPixels; // 16 x 16 array representing green LEDs
-	 logic RST;                   // reset - toggle this on startup
-	 
-	 assign RST = ~KEY[0];
+	 logic RST, next, select;                  
+//	 logic [1:0] one,two,three,four,five,size,seven,eight,nine;
+	 logic [3:0] number;
+	 assign RST = SW[9];
 	 
 	 /* Standard LED Driver instantiation - set once and 'forget it'. 
 	    See LEDDriver.sv for more info. Do not modify unless you know what you are doing! */
@@ -45,8 +46,12 @@ module DE1_SoC (HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, KEY, SW, LEDR, GPIO_1, CLOCK
 	 /* LED board test submodule - paints the board with a static pattern.
 	    Replace with your own code driving RedPixels and GrnPixels.
 		 
-	 	 KEY0      : Reset
+	 	 SW[9]      : Reset
 		 =================================================================== */
-	 LED_test test (.RST(~KEY[0]), .RedPixels, .GrnPixels);
-	 
+//	LED_init init (GrnPixels);
+	selector s (.clock(SYSTEM_CLOCK), .reset(RST), .next(next), .GrnPixels(GrnPixels));
+	cleanInput c1 (.Clock(SYSTEM_CLOCK), .Reset(RST), .in(~KEY[0]), .out(select));
+	cleanInput c2 (.Clock(SYSTEM_CLOCK), .Reset(RST), .in(~KEY[1]), .out(next));
+	
+//	led_controller lc(.number,.player(0),.select(~KEY[0]), .RedPixels, .reset(RST));
 endmodule
