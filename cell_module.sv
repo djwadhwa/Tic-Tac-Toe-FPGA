@@ -1,7 +1,6 @@
-module cell_module(clock, reset, player, select, row, col, red);
+module cell_module(clock, reset, player, select);
 	input logic clock, reset, player, select;  //player 0 = X, player 1 = O
 	input logic [1:0] row, col;
-	output logic [15:0] [15:0] red;
 
 	enum {x, o, none} ps, ns;
 
@@ -13,29 +12,6 @@ module cell_module(clock, reset, player, select, row, col, red);
 			x: ns = x;
 			o: ns = o;
 			default: ns = none;
-		endcase
-
-	always_comb
-		case(ps)
-			x: begin
-				red[1+(row*5)] |= (16'b0100100000000000)>>(col*5);
-				red[2+(row*5)] |= (16'b0011000000000000)>>(col*5);
-				red[3+(row*5)] |= (16'b0011000000000000)>>(col*5);
-				red[4+(row*5)] |= (16'b0100100000000000)>>(col*5);
-				end
-			o: begin
-				red[1+(row*5)] |= (16'b0111100000000000)>>(col*5);
-				red[2+(row*5)] |= (16'b0100100000000000)>>(col*5);
-				red[3+(row*5)] |= (16'b0100100000000000)>>(col*5);
-				red[4+(row*5)] |= (16'b0111100000000000)>>(col*5);
-				end
-			none:
-				begin
-				red[1+(row*5)] &= (16'b1000011111111111)>>(col*5);
-				red[2+(row*5)] &= (16'b1000011111111111)>>(col*5);
-				red[3+(row*5)] &= (16'b1000011111111111)>>(col*5);
-				red[4+(row*5)] &= (16'b1000011111111111)>>(col*5);
-				end
 		endcase
 				
 	always_ff @(posedge clock)
