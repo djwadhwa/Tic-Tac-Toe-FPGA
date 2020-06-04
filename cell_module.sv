@@ -1,7 +1,6 @@
-module cell_module(clock, reset, player, select);
+module cell_module(clock, reset, player, select, out);
 	input logic clock, reset, player, select;  //player 0 = X, player 1 = O
-	input logic [1:0] row, col;
-
+	output logic [1:0] out;
 	enum {x, o, none} ps, ns;
 
 	always_comb
@@ -13,13 +12,14 @@ module cell_module(clock, reset, player, select);
 			o: ns = o;
 			default: ns = none;
 		endcase
-				
+		
+		assign out = {ps == o, ps == x};
+	
 	always_ff @(posedge clock)
 		if (reset)
 			ps <= none;
 		else 
 			ps <= ns;
-			
 endmodule
 
 module cell_module_testbench();

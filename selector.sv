@@ -1,7 +1,11 @@
-module selector (clock, reset, next, GrnPixels);
+module selector (clock, reset, next, GrnPixels, number);
 	input logic next, clock, reset;
 	output logic [15:0] [15:0] GrnPixels;
-	enum{zero, one, two, three, four, five, six, seven, eight} ns, ps;
+	output logic [3:0] number;
+//	enum{zero, one, two, three, four, five, six, seven, eight} ns, ps;
+	logic [3:0] ps, ns;
+	
+	parameter [3:0] zero=0, one=1,two=2, three=3, four=4, five=5, six=6, seven=7, eight=8;
 	
 	always_comb 
 		case (ps)
@@ -70,6 +74,8 @@ module selector (clock, reset, next, GrnPixels);
 				GrnPixels[13] = 16'b0000010110100000;
 				end
 			eight: begin
+				GrnPixels[02] = 16'b0000010000100000;
+				GrnPixels[03] = 16'b0000010000100000;
 				GrnPixels[12] = 16'b0000010000101100;
 				GrnPixels[13] = 16'b0000010000101100;
 				end
@@ -78,7 +84,7 @@ module selector (clock, reset, next, GrnPixels);
 						end
 		endcase
 	
-//	assign number = ps;
+	assign number = ps;
 	
 	always_ff @(posedge clock)
 		if (reset) begin
